@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Body
-from app.services.triage import classify_ticket
+from app.jobs.tasks import classify_ticket_task
 
 router =APIRouter()
 
@@ -8,4 +8,5 @@ async def classify(text:str =Body(...,embed=True)):
     """
     Classify a support ticket by category and priority.
     """
-    return await classify_ticket(text)
+    task= classify_ticket_task.delay(text)
+    return {"job_id":task.id, "status":"queued"}
