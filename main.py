@@ -1,11 +1,11 @@
 from fastapi import FastAPI
-from app.api import classify
-from app.api import result
+from app.api import classify, result, history
 
 app = FastAPI(title="Smart Support System")
 
-app.include_router(classify.router)
-app.include_router(result.router)
+app.include_router(classify.router, prefix="/api")
+app.include_router(result.router, prefix="/api")
+app.include_router(history.router, prefix="/api")
 
 @app.get("/")
 def health_check():

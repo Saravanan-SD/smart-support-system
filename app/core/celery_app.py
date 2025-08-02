@@ -9,10 +9,13 @@ celery_app=Celery(
 )
 
 celery_app.conf.update(
-    task_routes={"app.jobs.tasks.*": {"queue": "classification"}},
-    result_expires=3600,
-    task_serializer="json",
-    result_serializer="json",
-    accept_content=["json"],
+    task_routes={"app.jobs.tasks.classify_ticket_task": {"queue": "classification"},
+                "app.jobs.tasks.summarize_ticket_task": {"queue": "enrichment"},
+                "app.jobs.tasks.detect_pii_task": {"queue": "enrichment"},
+    },
+    task_default_retry_delay=5,
+    task_time_limit=60,
+    task_acks_late=True,
     broker_connection_retry_on_startup=True,
 )
+
